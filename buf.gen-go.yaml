@@ -1,0 +1,12 @@
+version: v1
+
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/mfridman/buf-generate-twirp-go/go
+    except:
+      - buf.build/googleapis/googleapis
+plugins:
+  - remote: buf.build/protocolbuffers/plugins/go
+    out: go
+    opt: paths=source_relative
