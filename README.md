@@ -1,19 +1,20 @@
 # Generate twirp code with buf
 
-Running the following will generate code Go + Twirp code, but the generated code will not compile because of missing dependencies:
+Running the following will generate Go + Twirp code, but the generated code will not compile because of missing dependencies:
 
 ```
 $ buf generate --template buf.gen.yaml buf.build/acme/petapis
 
-could not import github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1 (no required module provides package "github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1")
+could not import github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1
+(no required module provides package "github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1")
 ```
 
-You could add the `--include-imports` option to buf generate, but this will result in a failure:
+You could add the `--include-imports` option to buf generate, but this will result in a failure due to the way the [Twirp plugin works](https://github.com/twitchtv/twirp/blob/ff7d9f87d8598707f3465c80ee5dec1ba8520310/protoc-gen-twirp/generator.go#L181-L216):
 
 ```
 $ buf generate --include-imports --template buf.gen.yaml buf.build/acme/petapis
 
-Failure: plugin "buf.build/demolab/plugins/twirp:v8.1.1-1" exited with non-zero status 1: 2022/04/21 17:54:47 error:files have conflicting go_package settings, must be the same: "money" and "paymentv1alpha1"
+error:files have conflicting go_package settings, must be the same: "money" and "paymentv1alpha1"
 ```
 
 Note, the buf generate templates use `except` for googleapis. [See the docs for more info](https://docs.buf.build/tour/use-managed-mode#remove-modules-from-managed-mode).
