@@ -1,8 +1,8 @@
-# Generate twirp code with buf
+# Generate Twirp code with buf
 
 Goal of this repo is to showcase:
 
-1. Using [`buf` CLI](https://docs.buf.build/generate/usage) to generate twirp code
+1. Using [`buf` CLI](https://docs.buf.build/generate/usage) to generate Twirp code
 2. Use the `--template` option to workaround certain plugins, such as Twirp, that generate *all* code to the same package and expect the same package name (which isn't always desired).
 
 ---
@@ -66,7 +66,7 @@ $ rm -rf go || true
 $ buf generate --template buf.gen.yaml buf.build/acme/petapis
 
 # generate dependant Go code (not using Twirp plugin)
-$ buf generate --template buf.gen-go.yaml buf.build/acme/paymentapis 
+$ buf generate --template buf.gen-go.yaml buf.build/acme/paymentapis
 
 $ go run cmd/server/main.go
 ```
