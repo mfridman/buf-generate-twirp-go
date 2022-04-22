@@ -63,10 +63,10 @@ Generated code is purposefully not check in, you generate it :)
 $ rm -rf go || true
 
 # generate Go and Twirp code
-$ buf generate --template buf.gen-go.yaml buf.build/acme/paymentapis 
-
-# generate dependant Go code
 $ buf generate --template buf.gen.yaml buf.build/acme/petapis
+
+# generate dependant Go code (not using Twirp plugin)
+$ buf generate --template buf.gen-go.yaml buf.build/acme/paymentapis 
 
 $ go run cmd/server/main.go
 ```
