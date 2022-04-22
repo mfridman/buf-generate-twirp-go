@@ -21,8 +21,8 @@ func main() {
 	// Twirp Client.
 	petStoreClient := petv1.NewPetStoreServiceProtobufClient("http://localhost:8080", http.DefaultClient)
 
-	// Client hits server evert 2 seconds.
-	ticker := time.NewTicker(2 * time.Second)
+	// Client hits server evert 1 seconds.
+	ticker := time.NewTicker(1 * time.Second)
 	go func() {
 		for range ticker.C {
 			resp, err := petStoreClient.GetPet(context.TODO(), &petv1.GetPetRequest{})
