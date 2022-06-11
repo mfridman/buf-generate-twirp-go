@@ -2,20 +2,24 @@
 
 Goal of this repo is to showcase:
 
-1. Using [`buf` CLI](https://docs.buf.build/generate/usage) to generate Twirp code
+1. How to use the [`buf` CLI](https://docs.buf.build/generate/usage) to generate Twirp code.
 2. Use the `--template` option to workaround certain plugins, such as Twirp, that generate *all* code to the same package and expect the same package name (which isn't always desired).
+
+If you ran into "error:files have conflicting go_package settings", you're in the right place.
 
 ---
 
 ### Problem
 
-The following buf generate command generates Go and Twirp code (plugins are hosted on [buf.build](https://buf.build/), no need to install anything but the `buf` CLI). 
-
-The problem is the generated code is missing dependencies:
+The following `buf` command generates Go and Twirp code from the [buf.gen.yaml](buf.gen.yaml) template. Bonus, all plugins are hosted on [buf.build](https://buf.build/), no need to install anything except the `buf` CLI if you want to follow along.
 
 ```
 $ buf generate --template buf.gen.yaml buf.build/acme/petapis
+```
 
+❌ The problem is the generated Go code is missing dependencies and thus will not compile:
+
+```
 could not import github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1
 (no required module provides package "github.com/mfridman/buf-generate-twirp-go/go/payment/v1alpha1")
 ```
@@ -28,22 +32,24 @@ $ buf generate --include-imports --template buf.gen.yaml buf.build/acme/petapis
 error:files have conflicting go_package settings, must be the same: "money" and "paymentv1alpha1"
 ```
 
-The example in this repo uses 2 modules hosted on the BSR. The [`acme/petapis`](https://buf.build/acme/petapis) module depends on the [`acme/paymentapis`](https://buf.build/acme/paymentapis) module.
+Taking a step back, the example in this repository is using 2 modules hosted on the BSR:
 
-https://buf.build/acme/petapis/file/main:pet/v1/pet.proto#L5
+1. [`acme/petapis`](https://buf.build/acme/petapis)
+2. [`acme/paymentapis`](https://buf.build/acme/paymentapis)
 
-Each of those modules has a different package and each module depends on `money.proto` and `datetime.proto` from googleapis.
+The `acme/petapis` module has a dependency on `acme/paymentapis`[^1] and `datetime.proto` (googleapis)[^2].
 
-https://buf.build/acme/petapis/file/main:pet/v1/pet.proto#L6
-https://buf.build/acme/paymentapis/file/main:payment/v1alpha1/payment.proto#L5
+The `acme/paymentapis` module has a dependency on `money.proto`[^3].
 
-Note, the buf generate templates use `except` for googleapis. [See the docs for more info](https://docs.buf.build/tour/use-managed-mode#remove-modules-from-managed-mode).
+If you're curious why the buf templates use `except` for googleapis, head over to the [docs tour for more details](https://docs.buf.build/tour/use-managed-mode#remove-modules-from-managed-mode).
 
 ---
 
 ### Solution
 
-The solution in most cases is to split up code generation into multiple steps, whereby we generate the dependent code using a separate template. If you have a large dependency graph this may get out of hand, but is usually fine.
+**The solution in most cases is to split up code generation into multiple steps.**
+
+Whereby we generate the *dependent* code using a separate template. If you have a large dependency graph this may get out of hand, but is usually fine.
 
 To get around the error above, we can use the `--template` option with a separate template file to generate the dependant Go code like so:
 
@@ -79,3 +85,7 @@ dante PET_TYPE_DOG
 dante PET_TYPE_DOG
 ... every 1 second
 ```
+
+[^1]: https://buf.build/acme/petapis/file/main:pet/v1/pet.proto#L5
+[^2]: https://buf.build/acme/petapis/file/main:pet/v1/pet.proto#L6
+[^3]: https://buf.build/acme/paymentapis/file/main:payment/v1alpha1/payment.proto#L5
