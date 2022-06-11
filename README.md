@@ -51,7 +51,7 @@ If you're curious why the buf templates use `except` for googleapis, head over t
 
 Whereby we generate the *dependent* code using a separate template. If you have a large dependency graph this may get out of hand, but is usually fine.
 
-To get around the error above, we can use the `--template` option with a separate template file to generate the dependant Go code like so:
+✅ To get around the error above, we can use the `--template` option with a separate template file to generate the dependant Go code like so:
 
 ```
 $ buf generate --template buf.gen-go.yaml buf.build/acme/paymentapis
